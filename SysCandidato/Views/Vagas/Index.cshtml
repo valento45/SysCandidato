@@ -1,0 +1,46 @@
+﻿@model List<VagasModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<a class="btn btn-primary" asp-controller="Vagas" asp-action="AdicionarVagas">Nova vaga</a>
+<br />
+
+<div class="container table-primary col-lg-8">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Descrição</th>
+                <th>Candidatos</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IdVaga)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(x => item.Descricao)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(x => item.Candidatos.Count)
+                    </td>
+                    <td>
+                        <a asp-controller="Vagas" asp-action="AdicionarCandidatos" asp-route-id="@item.IdVaga" class="btn btn-info">Add. Candidatos</a>
+                        <a asp-controller="Vagas" asp-action="ExibirCandidatos" asp-route-id="@item.IdVaga" class="btn btn-warning">Ver Candidatos</a>
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+

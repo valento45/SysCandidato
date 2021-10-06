@@ -1,0 +1,7 @@
+Pessoa_TB
+ Nome
+ Sobrenome
+ CPF
+ Dt.Nasc
+
+

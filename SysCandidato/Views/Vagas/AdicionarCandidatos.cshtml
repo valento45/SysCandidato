@@ -1,0 +1,36 @@
+﻿@model VagasModel
+@{
+    ViewData["Title"] = "Adicionar Candidatos";
+}
+
+
+<h3>Cadastro de candidato para a vaga @Model.Descricao</h3>
+
+<form asp-action="AdicionarCandidatos" method="post">
+    <input type="hidden" asp-for="IdVaga" />
+    <div class="form-group">
+        <label asp-for="Candidatos" class="col-form-label"></label>
+        <input asp-for="Candidatos" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Candidatos[0].Sobrenome" class="col-form-label"></label>
+        <input asp-for="Candidatos[0].Sobrenome" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Candidatos[0].CPF" class="col-form-label"></label>
+        <input asp-for="Candidatos[0].CPF" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Candidatos[0].DataNascimento" class="col-form-label"></label>
+        <input asp-for="Candidatos[0].DataNascimento" class="form-control" />
+    </div>
+
+    <input type="submit" value="Adicionar" class="btn btn-success" />
+    <input type="submit" asp-action="Index" value="Voltar" class="btn" />
+</form>
+
+
+

@@ -1,0 +1,15 @@
+﻿@model VagasModel
+@{
+    ViewData["Title"] = "Adicionar Vagas";
+}
+<h3>Cadastro de vaga</h3>
+
+<form asp-action="AdicionarVagas" method="post">
+    <div class="form-group">
+        <label asp-for="Descricao" class="col-form-label"></label>
+        <input asp-for="Descricao" class="form-control" />
+    </div>
+    <input type="submit" value="Salvar" class="btn btn-success" />
+    <input type="submit" asp-action="Index" value="Voltar" class="btn" />
+</form>
+
