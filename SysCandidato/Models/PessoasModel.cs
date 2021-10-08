@@ -11,6 +11,7 @@ namespace SysCandidato.Models
     public class PessoasModel
     {
         public int IdPessoa { get; set; }
+        public int IdVaga { get; set; }
         public string Nome { get; set; }
         public string Sobrenome { get; set; }
         public int CPF { get; set; }
@@ -37,13 +38,15 @@ namespace SysCandidato.Models
         /// <param name="obj"></param>
         public static void Insert(PessoasModel obj)
         {
-            MySqlCommand cmd = new MySqlCommand("INSERT INTO pessoa_tb (nome, @obrenome, cpf, data_nascimento) VALUES (@nome, @sobrenome, @cpf, @data_nascimento);");
+            MySqlCommand cmd = new MySqlCommand("INSERT INTO pessoa_tb (nome, sobrenome, cpf, data_nascimento) VALUES (@nome, @sobrenome, @cpf, @data_nascimento); SELECT LAST_INSERT_ID();");
             cmd.Parameters.AddWithValue(@"nome", obj.Nome);
             cmd.Parameters.AddWithValue(@"sobrenome", obj.Sobrenome);
             cmd.Parameters.AddWithValue(@"cpf", obj.CPF);
             cmd.Parameters.AddWithValue(@"data_nascimento", obj.DataNascimento);
 
-           Access.ExecuteNonQuery(cmd);
+            int id;
+            int.TryParse( Access.ExecuteScalar(cmd).ToString(), out id);
+            obj.IdPessoa = id;
         }
     }
 }

@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using SysCandidato.Models.AccessBE;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
 
 namespace SysCandidato
 {
@@ -25,14 +26,34 @@ namespace SysCandidato
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
             services.AddIdentityCore<User>(options => { });
             services.AddScoped<IUserStore<User>, UserStore>();
+
+            //Chama o método que adiciona distribuição entre caches de memoria
+            services.AddDistributedMemoryCache();
+
+            //Adiciona e especifica a sessão que será usada para restaurar os dados dos usuários
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromSeconds(500);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            }
+            );
+
+            //Configurando serviço para injetar a implementacao IHttpContextAccessor na view
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            services.AddControllersWithViews();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            //Habilitando o uso de sessão
+            app.UseSession();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -54,8 +75,10 @@ namespace SysCandidato
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Vagas}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Login}/{id?}");
             });
+
+
         }
     }
 }

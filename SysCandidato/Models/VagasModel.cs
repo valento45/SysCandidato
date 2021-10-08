@@ -51,7 +51,7 @@ namespace SysCandidato.Models
         public static List<PessoasModel> GetCandidatosByIdVaga(int id)
         {
             List<PessoasModel> result = new List<PessoasModel>();
-            MySqlCommand cmd = new MySqlCommand("SELECT * FROM vaga_candidato_tb WHERE id_vaga = " + id);
+            MySqlCommand cmd = new MySqlCommand("SELECT * FROM pessoa_tb AS pessoa join vaga_candidato_tb AS vaga ON pessoa.id_pessoa = vaga.id_pessoa WHERE id_vaga = " + id);
             foreach (DataRow x in Access.ExecuteReader(cmd).Tables[0].Rows)
             {
                 result.Add(new PessoasModel(x));

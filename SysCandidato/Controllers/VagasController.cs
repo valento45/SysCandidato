@@ -6,22 +6,33 @@ using System.Threading.Tasks;
 using SysCandidato.Models;
 using Microsoft.AspNetCore.Identity;
 using SysCandidato.Models.AccessBE;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
 
 namespace SysCandidato.Controllers
 {
     public class VagasController : Controller
     {
-
-        [Route("")]
         [Route("Vagas")]
         public IActionResult Index()
         {
-            return View(VagasModel.GetAllVagas());
+            byte[] jsonUser;
+            if ((bool)HttpContext.Session?.TryGetValue("SessionUser", out jsonUser))
+            {
+                var user = JsonConvert.DeserializeObject<LoginModel>(HttpContext.Session?.GetString("SessionUser"));
+                    
+                return View(VagasModel.GetAllVagas());
+            }
+            else
+                return NotFound("Usuário não autenticado !");
         }
 
         [HttpGet]
         public IActionResult AdicionarVagas()
         {
+            var user = JsonConvert.DeserializeObject<LoginModel>(HttpContext.Session.GetString("SessionUser"));
+            if (user.UserName == string.Empty)
+                return NotFound("Usuário não autenticado !");
             return View();
         }
 
@@ -39,31 +50,40 @@ namespace SysCandidato.Controllers
         }
 
         [HttpGet]
-       // [Route("Vagas/{idvaga}")]
-       [Route("Vagas/AdicionarCandidatos/{idvaga}")]
+        // [Route("Vagas/{idvaga}")]
+        [Route("Vagas/AdicionarCandidatos/{idvaga}")]
         public IActionResult AdicionarCandidatos(int idvaga)
         {
             var vaga = VagasModel.GetVagaById(idvaga);
             if (vaga == null || vaga.IdVaga <= 0)
                 return NotFound();
             else
-                return View(vaga);
+            {
+                var candidato = new PessoasModel { IdVaga = idvaga };
+                return View(candidato);
+            }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult AdicionarCandidatos(VagasModel vaga)
+        public IActionResult AdicionarCandidatos(PessoasModel pessoa)
         {
             if (ModelState.IsValid)
             {
-                vaga.InsertCandidatos();
+                if (pessoa.IdVaga > 0)
+                {
+                    VagasModel vaga = VagasModel.GetVagaById(pessoa.IdVaga);
+                    vaga.Candidatos.Add(pessoa);
+                    vaga.InsertCandidatos();
+                }
+                else
+                    return NotFound("Dados da vaga inconsistentes !");
+                
                 return RedirectToAction(nameof(Index));
-
             }
             else
                 return View();
         }
-
 
 
 
