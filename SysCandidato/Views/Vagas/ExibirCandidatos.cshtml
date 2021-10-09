@@ -1,0 +1,66 @@
+﻿@model IEnumerable<SysCandidato.Models.PessoasModel>
+
+@{
+    ViewData["Title"] = "ExibirCandidatos";
+}
+
+@if(Model.FirstOrDefault().IdVaga > 0)
+            {
+                <h2>@VagasModel.GetVagaById(Model.FirstOrDefault().IdVaga).Descricao</h2>
+            }
+            else
+            {
+                <h1>Nenhum vaga para listagem !</h1>
+            }
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Código
+            </th>
+            <th>
+                Vaga
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Sobrenome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CPF)
+            </th>
+            <th>
+                Data de Nascimento
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdPessoa)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdVaga)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Sobrenome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CPF)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DataNascimento)
+                </td>
+            </tr>
+        }
+        <a class="btn btn-primary" asp-controller="Vagas" asp-action="Index">Voltar</a>
+    </tbody>
+</table>

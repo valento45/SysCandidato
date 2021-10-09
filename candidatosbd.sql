@@ -38,6 +38,5 @@ references vagas_tb(id_vaga)
 
 select * from vaga_candidato_tb;
 select * from vagas_tb;
-
 select* from pessoa_tb;
 select * from users_tb;

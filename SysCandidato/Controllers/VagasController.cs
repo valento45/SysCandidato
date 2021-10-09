@@ -20,7 +20,7 @@ namespace SysCandidato.Controllers
             if ((bool)HttpContext.Session?.TryGetValue("SessionUser", out jsonUser))
             {
                 var user = JsonConvert.DeserializeObject<LoginModel>(HttpContext.Session?.GetString("SessionUser"));
-                    
+
                 return View(VagasModel.GetAllVagas());
             }
             else
@@ -78,14 +78,40 @@ namespace SysCandidato.Controllers
                 }
                 else
                     return NotFound("Dados da vaga inconsistentes !");
-                
+
                 return RedirectToAction(nameof(Index));
             }
             else
                 return View();
         }
 
+        [HttpGet]
+        [Route("Vagas/ExibirCandidatos/{idvaga}")]
 
+        public IActionResult ExibirCandidatos(int idvaga)
+        {
+            byte[] jsonUser;
+            if ((bool)HttpContext.Session?.TryGetValue("SessionUser", out jsonUser))
+            {
+                if (!(idvaga > 0))
+                {
+                    return NotFound("Nenhuma vaga selecionada!");
+                }
+                else
+                {
+                    var candidatos = VagasModel.GetCandidatosByIdVaga(idvaga);
+                    candidatos.ForEach(atualizarVaga(idvaga));
+                    return View(candidatos);
+                }
+            }
+            else
+                return NotFound("Usuário não autenticado !");
+
+        }
+        private Action<PessoasModel> atualizarVaga(int idvaga)
+        {
+            return x => x.IdVaga = idvaga;
+        }
 
     }
 }

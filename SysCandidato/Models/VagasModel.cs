@@ -40,6 +40,8 @@ namespace SysCandidato.Models
         }
         private List<PessoasModel> _candidatos;
 
+        public VagasModel() { }
+
         public VagasModel(DataRow dr)
         {
             int idvaga;

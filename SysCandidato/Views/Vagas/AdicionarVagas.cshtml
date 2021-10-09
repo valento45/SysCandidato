@@ -4,7 +4,7 @@
 }
 <h3>Cadastro de vaga</h3>
 
-<form asp-action="AdicionarVagas" method="post">
+<form asp-controller="Vagas" asp-action="AdicionarVagas" method="post">
     <div class="form-group">
         <label asp-for="Descricao" class="col-form-label"></label>
         <input asp-for="Descricao" class="form-control" />
