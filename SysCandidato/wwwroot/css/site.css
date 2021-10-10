@@ -69,3 +69,22 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
+
+.form-center {
+    background-color: #e1e1e1;
+    width: 400px;
+    height: 150px;
+    left: 50%;
+    right: 50%;
+    top: 50%;
+    bottom: 50%;
+    padding: 0px;
+    position: center;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: Tahoma;
+    font-size: 9pt;
+}

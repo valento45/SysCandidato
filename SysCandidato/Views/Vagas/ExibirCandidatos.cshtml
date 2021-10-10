@@ -4,7 +4,7 @@
     ViewData["Title"] = "ExibirCandidatos";
 }
 
-@if(Model.FirstOrDefault().IdVaga > 0)
+@if(Model.Count() > 0 && Model.FirstOrDefault().IdVaga > 0)
             {
                 <h2>@VagasModel.GetVagaById(Model.FirstOrDefault().IdVaga).Descricao</h2>
             }

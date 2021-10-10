@@ -8,19 +8,20 @@ using Microsoft.AspNetCore.Identity;
 using SysCandidato.Models.AccessBE;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SysCandidato.Controllers
 {
     public class VagasController : Controller
     {
+        [HttpGet]
         [Route("Vagas")]
         public IActionResult Index()
         {
             byte[] jsonUser;
             if ((bool)HttpContext.Session?.TryGetValue("SessionUser", out jsonUser))
             {
-                var user = JsonConvert.DeserializeObject<LoginModel>(HttpContext.Session?.GetString("SessionUser"));
-
+                var user = JsonConvert.DeserializeObject<LoginModel>(Access.Decrypt(LoginModel.GetHashCode().ToString(), HttpContext.Session?.GetString("SessionUser")));
                 return View(VagasModel.GetAllVagas());
             }
             else
@@ -30,7 +31,8 @@ namespace SysCandidato.Controllers
         [HttpGet]
         public IActionResult AdicionarVagas()
         {
-            var user = JsonConvert.DeserializeObject<LoginModel>(HttpContext.Session.GetString("SessionUser"));
+            var user = JsonConvert.DeserializeObject<LoginModel>(Access.Decrypt(LoginModel.UserLogado.UserName, HttpContext.Session?.GetString("SessionUser")));
+
             if (user.UserName == string.Empty)
                 return NotFound("Usuário não autenticado !");
             return View();

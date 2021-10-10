@@ -34,16 +34,15 @@ namespace SysCandidato
 
             //Adiciona e especifica a sessão que será usada para restaurar os dados dos usuários
             services.AddSession(options =>
-            {
+            {               
                 options.IdleTimeout = TimeSpan.FromSeconds(500);
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             }
             );
-
+            
             //Configurando serviço para injetar a implementacao IHttpContextAccessor na view
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
             services.AddControllersWithViews();
 
         }
@@ -68,9 +67,8 @@ namespace SysCandidato
             app.UseStaticFiles();
 
             app.UseRouting();
-
             app.UseAuthorization();
-
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

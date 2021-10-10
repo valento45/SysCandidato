@@ -17,7 +17,7 @@ namespace SysCandidato.Controllers
     {
         private UserManager<User> _userManager;
 
-        public HomeController(UserManager<User> userManager, IHttpContextAccessor httpContextSession)
+        public HomeController(UserManager<User> userManager)
         {
             _userManager = userManager;
         }
@@ -78,9 +78,10 @@ namespace SysCandidato.Controllers
                 if (_user != null && await _userManager.CheckPasswordAsync(_user, loginModel.Password))
                 {
                     loginModel.Password = _userManager.PasswordHasher.HashPassword(_user, loginModel.Password);
-                    HttpContext.Session.SetString("SessionUser", JsonConvert.SerializeObject(loginModel));
-                    HttpContext.Session.SetString("SessionUserName", loginModel.UserName);
-                    return View();
+                    LoginModel.SetHashCode(loginModel.UserName);
+                    HttpContext.Session.SetString("SessionUser", Access.Encrypt(LoginModel.GetHashCode().ToString(), JsonConvert.SerializeObject(loginModel)));
+
+                    return RedirectToAction(nameof(Index));
                 }
                 ModelState.AddModelError("", "Usuário ou senha inválida!");
             }
@@ -92,6 +93,14 @@ namespace SysCandidato.Controllers
         {
             return View();
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction(nameof(Index));
+        }
+
 
 
         private string TrataExcecao(IEnumerable<IdentityError> erros)
