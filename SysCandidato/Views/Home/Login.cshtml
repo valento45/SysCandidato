@@ -4,24 +4,24 @@
     ViewData["Title"] = "Login";
 }
 
-<h1>Login</h1>
+<h1 class="text-center">Login</h1>
 <hr />
-    <div class="form-check-inline " >
+    <div class="form-group form-center" >
         <form asp-action="Login" class="form-group align-items-center" >
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="UserName" class="control-label"></label>
+                <label asp-for="UserName" class="control-label">Usuário</label>
                 <input asp-for="UserName" class="form-control" />
                 <span asp-validation-for="UserName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
+                <label asp-for="Password" class="control-label">Senha</label>
                 <input asp-for="Password" class="form-control" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Acessar" class="btn btn-primary" />              
-                <a asp-controller="Home" asp-action="Index">Voltar</a>
+                <a class="btn btn-danger" asp-controller="Home" asp-action="Index">Voltar</a>
             </div>
         </form>
     </div>

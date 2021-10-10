@@ -72,14 +72,10 @@ body {
 
 .form-center {
     background-color: #e1e1e1;
-    width: 400px;
-    height: 150px;
-    left: 50%;
-    right: 50%;
-    top: 50%;
-    bottom: 50%;
-    padding: 0px;
-    position: center;
+    width: 50%;
+    height: 50%;
+    margin:auto;
+
 }
 
 * {

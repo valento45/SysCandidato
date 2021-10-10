@@ -74,6 +74,11 @@ namespace SysCandidato.Controllers
         {
             if (ModelState.IsValid)
             {
+                if(loginModel.UserName == null)
+                {
+                    ModelState.AddModelError("", "Usuário ou senha inválida!");
+                    return View();
+                }
                 var _user = await _userManager.FindByNameAsync(loginModel.UserName);
                 if (_user != null && await _userManager.CheckPasswordAsync(_user, loginModel.Password))
                 {
