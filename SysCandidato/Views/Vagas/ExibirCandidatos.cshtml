@@ -4,14 +4,14 @@
     ViewData["Title"] = "ExibirCandidatos";
 }
 
-@if(Model.Count() > 0 && Model.FirstOrDefault().IdVaga > 0)
-            {
-                <h2>@VagasModel.GetVagaById(Model.FirstOrDefault().IdVaga).Descricao</h2>
-            }
-            else
-            {
-                <h1>Nenhum vaga para listagem !</h1>
-            }
+@if (Model.Count() > 0 && Model.FirstOrDefault().IdVaga > 0)
+{
+    <h2>@VagasModel.GetVagaById(Model.FirstOrDefault().IdVaga).Descricao</h2>
+}
+else
+{
+    <h1>Nenhum vaga para listagem !</h1>
+}
 
 <table class="table">
     <thead>
@@ -61,6 +61,8 @@
                 </td>
             </tr>
         }
-        <a class="btn btn-primary" asp-controller="Vagas" asp-action="Index">Voltar</a>
     </tbody>
 </table>
+<div>
+    <a class="btn btn-primary" asp-controller="Vagas" asp-action="Index">Voltar</a>
+</div>
