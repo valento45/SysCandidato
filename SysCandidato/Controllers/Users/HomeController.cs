@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SysCandidato.Models;
 using SysCandidato.Models.AccessBE;
+using SysCandidato.Models.EmailGateway;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,7 +19,7 @@ namespace SysCandidato.Controllers
     {
         private UserManager<User> _userManager;
 
-        public HomeController(UserManager<User> userManager)
+        public HomeController(UserManager<User> userManager )
         {
             _userManager = userManager;
         }
@@ -79,13 +81,12 @@ namespace SysCandidato.Controllers
                     ModelState.AddModelError("", "Usuário ou senha inválida!");
                     return View();
                 }
-                var _user = await _userManager.FindByNameAsync(loginModel.UserName);
+                User _user = await _userManager.FindByNameAsync(loginModel.UserName);
                 if (_user != null && await _userManager.CheckPasswordAsync(_user, loginModel.Password))
                 {
                     loginModel.Password = _userManager.PasswordHasher.HashPassword(_user, loginModel.Password);
                     LoginModel.SetHashCode(loginModel.UserName);
                     HttpContext.Session.SetString("SessionUser", Access.Encrypt(LoginModel.GetHashCode().ToString(), JsonConvert.SerializeObject(loginModel)));
-
                     return RedirectToAction(nameof(Index));
                 }
                 ModelState.AddModelError("", "Usuário ou senha inválida!");
@@ -100,12 +101,71 @@ namespace SysCandidato.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> ForgotPassword()
+        {
+            return View();
+        }
+        
+        [HttpGet]
+        public async Task<IActionResult> ResetPassword(string token, string email)
+        {
+            return View(new ResetPasswordModel {Token = token, Email= email });
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+
+                if(user != null)
+                {
+                    var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
+
+                    if (!result.Succeeded)
+                    {
+                        ModelState.AddModelError("", TrataExcecao(result.Errors));
+                        return View();
+                    }
+                    return View("Success");
+                }                
+            }
+            return View();
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+
+                if(user != null)
+                {
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    var resetURL = Url.Action(nameof(ResetPassword), "Home", new { token = token, email = model.Email }, Request.Scheme);
+                    EmailModel.EnviaMensagemEmail(model.Email, "errojoiasmrx@gmail.com", "Resetar senha", $"Clique no link para redefinir sua senha \r\n {resetURL}", "errojoiasmrx@gmail.com", "erro1234");
+                    
+                    return View("Success");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Nenhum usuário cadastrado com este e-mail.");
+                }
+            }
+            return View();
+        }
+
+
+        [HttpGet]
         public async Task<IActionResult> Logout()
         {
             HttpContext.Session.Clear();
             return RedirectToAction(nameof(Index));
         }
-
 
 
         private string TrataExcecao(IEnumerable<IdentityError> erros)
