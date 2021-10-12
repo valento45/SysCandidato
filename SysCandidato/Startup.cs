@@ -1,13 +1,9 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using SysCandidato.Models.AccessBE;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
@@ -26,7 +22,7 @@ namespace SysCandidato
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddIdentityCore<User>(options => { });
+            services.AddIdentityCore<User>(options => { }).AddDefaultTokenProviders();
             services.AddScoped<IUserStore<User>, UserStore>();
 
             //Chama o método que adiciona distribuição entre caches de memoria
@@ -40,7 +36,7 @@ namespace SysCandidato
                 options.Cookie.IsEssential = true;
             }
             );
-            
+
             //Configurando serviço para injetar a implementacao IHttpContextAccessor na view
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddControllersWithViews();

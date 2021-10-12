@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using ExtensionMethods.ConnectionsGateway;
 using Microsoft.AspNetCore.Identity;
 using MySql.Data.MySqlClient;
 using System;
@@ -40,7 +41,7 @@ namespace SysCandidato.Models.AccessBE
                         user.NormalizedUserName,
                         user.PasswordHash,
                         user.Email
-                    }); 
+                    });
             }
             return IdentityResult.Success;
         }
@@ -58,9 +59,19 @@ namespace SysCandidato.Models.AccessBE
             return IdentityResult.Success;
         }
 
-        public override Task<User> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken = default)
+        public override async Task<User> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            using (var connection = Access.GetConnection().ToMySql())
+            {
+                if (connection.State == System.Data.ConnectionState.Closed)
+                    connection.Open();
+
+                return  await connection.QueryFirstOrDefaultAsync<User>("Select * From users_tb WHERE email = @email", new
+                {
+                    email = normalizedEmail
+                });
+
+            }
         }
 
         public override Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken = default)
@@ -68,9 +79,18 @@ namespace SysCandidato.Models.AccessBE
             throw new NotImplementedException();
         }
 
-        public override Task<User> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken = default)
+        public override async Task<User> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            using (var connection = Access.GetConnection().ToMySql())
+            {
+                if (connection.State == System.Data.ConnectionState.Closed)
+                    connection.Open();
+
+                return await connection.QueryFirstOrDefaultAsync<User>("Select * From users_tb WHERE username = @username", new
+                {
+                    username = normalizedUserName
+                });
+            }
         }
 
         public override Task<IList<Claim>> GetClaimsAsync(User user, CancellationToken cancellationToken = default)

@@ -25,7 +25,7 @@ namespace SysCandidato.Models.EmailGateway
         /// <param name="Assunto">Assunto da mensagem (Subject)</param>
         /// <param name="enviaMensagem">Corpo da mensagem(Body)</param>
         /// <returns>Status da mensagem</returns>
-        public static string EnviaMensagemEmail(string destinatario, string remetente, string assunto, string enviaMensagem, string email, string senha)
+        public static async Task<string> EnviaMensagemEmail(string destinatario, string remetente, string assunto, string enviaMensagem, string email, string senha)
         {
             try
             {
@@ -33,34 +33,44 @@ namespace SysCandidato.Models.EmailGateway
                 if (!validaEmail)
                     return "Email do destinatário é inválido: " + destinatario;
                 //cria uma mensagem
-                MailMessage mensagemEmail = new MailMessage(remetente, destinatario, assunto, enviaMensagem);
+                //MailMessage mensagemEmail = new MailMessage(remetente, destinatario, assunto, enviaMensagem);
+                using (MailMessage mensagemEmail = new MailMessage())
+                {
+                    mensagemEmail.From = new MailAddress(remetente);
+                    mensagemEmail.To.Add(destinatario);
+                    mensagemEmail.Subject = assunto;
+                    mensagemEmail.Body = enviaMensagem;
+                    mensagemEmail.Priority = MailPriority.High;
 
-                //----------------------------------------------------------------------------------------------------------------------------------
-                //obtem os valores smtp do arquivo de configuração . Não vou usar estes valores estou apenas mostrando como obtê-los
-                //Configuration configurationFile = WebConfigurationManager.OpenWebConfiguration(null);
-                //MailSettingsSectionGroup mailSettings = configurationFile.GetSectionGroup("system.net/mailSettings") as MailSettingsSectionGroup;
-                //if (mailSettings != null)
-                //{
-                //    string host = mailSettings.Smtp.Network.Host;
-                //    string password = mailSettings.Smtp.Network.Password;
-                //    string username = mailSettings.Smtp.Network.UserName;
-                //    int port = mailSettings.Smtp.Network.Port;
-                //}
-                //--
+                    //----------------------------------------------------------------------------------------------------------------------------------
+                    //obtem os valores smtp do arquivo de configuração . Não vou usar estes valores estou apenas mostrando como obtê-los
+                    //Configuration configurationFile = WebConfigurationManager.OpenWebConfiguration(null);
+                    //MailSettingsSectionGroup mailSettings = configurationFile.GetSectionGroup("system.net/mailSettings") as MailSettingsSectionGroup;
+                    //if (mailSettings != null)
+                    //{
+                    //    string host = mailSettings.Smtp.Network.Host;
+                    //    string password = mailSettings.Smtp.Network.Password;
+                    //    string username = mailSettings.Smtp.Network.UserName;
+                    //    int port = mailSettings.Smtp.Network.Port;
+                    //}
+                    //--
 
-                //configuracoes do smtp
-                SmtpClient smtpClient = new SmtpClient();
-                smtpClient.Host = "smtp.gmail.com";
-                smtpClient.Port = 587;
-                smtpClient.EnableSsl = true;
-                smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
-                smtpClient.UseDefaultCredentials = true;
-                smtpClient.Credentials = new NetworkCredential(email, senha);
+                    //configuracoes do smtp
+                    using (SmtpClient smtpClient = new SmtpClient())
+                    {
+                        smtpClient.Host = "smtp.gmail.com";
+                        smtpClient.Port = 587;
+                        smtpClient.EnableSsl = true;
+                        smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
+                        smtpClient.UseDefaultCredentials = false;
+                        smtpClient.Credentials = new NetworkCredential(email, senha, "smtp.gmail.com");
+                        
+                        //envia mensagem 
+                        await smtpClient.SendMailAsync(mensagemEmail);
 
-                //envia mensagem 
-                smtpClient.Send(mensagemEmail);
-
-                return "Mensagem enviada para " + destinatario + " às " + DateTime.Now.ToString() + ".";
+                        return "success";
+                    }
+                }
             }
             catch (SmtpException ex)
             {

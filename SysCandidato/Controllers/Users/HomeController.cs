@@ -19,7 +19,7 @@ namespace SysCandidato.Controllers
     {
         private UserManager<User> _userManager;
 
-        public HomeController(UserManager<User> userManager )
+        public HomeController(UserManager<User> userManager)
         {
             _userManager = userManager;
         }
@@ -34,7 +34,7 @@ namespace SysCandidato.Controllers
         public async Task<IActionResult> Register(RegisterModel model)
         {
             if (ModelState.IsValid)
-            {                
+            {
                 var user = await _userManager.FindByNameAsync(model.UserName);
                 if (user == null)
                 {
@@ -50,7 +50,7 @@ namespace SysCandidato.Controllers
                         ModelState.AddModelError("", erros);
                     }
                     else
-                        return View("Success");
+                        return View("Success", "Usuário cadastrado com sucesso!");
                 }
             }
             return View();
@@ -76,7 +76,7 @@ namespace SysCandidato.Controllers
         {
             if (ModelState.IsValid)
             {
-                if(loginModel.UserName == null)
+                if (loginModel.UserName == null)
                 {
                     ModelState.AddModelError("", "Usuário ou senha inválida!");
                     return View();
@@ -105,11 +105,11 @@ namespace SysCandidato.Controllers
         {
             return View();
         }
-        
+
         [HttpGet]
         public async Task<IActionResult> ResetPassword(string token, string email)
         {
-            return View(new ResetPasswordModel {Token = token, Email= email });
+            return View(new ResetPasswordModel { Token = token, Email = email });
         }
 
 
@@ -120,7 +120,7 @@ namespace SysCandidato.Controllers
             {
                 var user = await _userManager.FindByEmailAsync(model.Email);
 
-                if(user != null)
+                if (user != null)
                 {
                     var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
 
@@ -129,8 +129,8 @@ namespace SysCandidato.Controllers
                         ModelState.AddModelError("", TrataExcecao(result.Errors));
                         return View();
                     }
-                    return View("Success");
-                }                
+                    return View("Success", "Senha redefinida com sucesso!");
+                }
             }
             return View();
         }
@@ -143,13 +143,15 @@ namespace SysCandidato.Controllers
             {
                 var user = await _userManager.FindByEmailAsync(model.Email);
 
-                if(user != null)
+                if (user != null)
                 {
                     var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                     var resetURL = Url.Action(nameof(ResetPassword), "Home", new { token = token, email = model.Email }, Request.Scheme);
-                    EmailModel.EnviaMensagemEmail(model.Email, "errojoiasmrx@gmail.com", "Resetar senha", $"Clique no link para redefinir sua senha \r\n {resetURL}", "errojoiasmrx@gmail.com", "erro1234");
-                    
-                    return View("Success");
+                    string message = await EmailModel.EnviaMensagemEmail(model.Email, "errojoiasmrx@gmail.com", "Resetar senha", $"Clique no link para redefinir sua senha \r\n {resetURL}", "errojoiasmrx@gmail.com", "erro1234");
+                    if (message.ToLower() != "success")
+                    {
+                        return View("success", "Tivemos um probleminha ao enviar email. :/ \r\nMensagem de erro:\r\n" + message);
+                    }
                 }
                 else
                 {
