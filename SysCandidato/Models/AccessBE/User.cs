@@ -9,6 +9,6 @@ namespace SysCandidato.Models.AccessBE
     public class User : IdentityUser
     {
         public string Id_Usuario { get; set; }
-    
+
     }
 }

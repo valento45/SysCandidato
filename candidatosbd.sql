@@ -6,6 +6,7 @@ create table users_tb(
 id_usuario int auto_increment primary key,
 username varchar(150),
 normalizedUserName varchar(150),
+email varchar(150),
 passwordhash varchar(300)
 );
 
@@ -40,3 +41,8 @@ select * from vaga_candidato_tb;
 select * from vagas_tb;
 select* from pessoa_tb;
 select * from users_tb;
+
+
+update users_tb set email = 'iggor1935@hotmail.com' WHERE id_usuario = 1;
+
+alter table users_tb ADD COLUMN confirmedEmail bool default false;

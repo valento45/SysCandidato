@@ -1,15 +1,17 @@
-﻿using System;
+﻿using ExtensionMethods.Authorizathion;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Net.Mime;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SysCandidato.Models.EmailGateway
 {
-    public class EmailModel 
+    public class EmailModel
     {
         /*
       1º O remetente deve ser de um email com domínio o gmail.com ( conta google ), pois foi programado utilizando classes gratuitas (existem pagas ), no entanto, o destinatario pode possuir qualquer dominio, apenas quem envia deve possuir dominio gmail.com.
@@ -57,17 +59,16 @@ namespace SysCandidato.Models.EmailGateway
 
                     //configuracoes do smtp
                     using (SmtpClient smtpClient = new SmtpClient())
-                    {
+                    {                        
+                        smtpClient.UseDefaultCredentials = true;
                         smtpClient.Host = "smtp.gmail.com";
                         smtpClient.Port = 587;
                         smtpClient.EnableSsl = true;
                         smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
-                        smtpClient.UseDefaultCredentials = false;
                         smtpClient.Credentials = new NetworkCredential(email, senha, "smtp.gmail.com");
-                        
+
                         //envia mensagem 
                         await smtpClient.SendMailAsync(mensagemEmail);
-
                         return "success";
                     }
                 }

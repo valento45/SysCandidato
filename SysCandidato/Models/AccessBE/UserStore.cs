@@ -22,13 +22,16 @@ namespace SysCandidato.Models.AccessBE
         {
             using (MySqlConnection con = Access.GetConnection().ToMySql())
             {
-                await con.ExecuteAsync("INSERT INTO users_tb (username, normalizedUserName, passwordhash) values (@username, @normalizedUserName, @passwordhash)",
+                await con.ExecuteAsync("INSERT INTO users_tb (username, normalizedUserName, passwordhash, email, confirmedEmail) values (@username, @normalizedUserName, @passwordhash, @email, @confirmedEmail)",
                     new
                     {
                         userName = user.UserName,
                         normalizedUserName = user.NormalizedUserName,
-                        passwordHash = user.PasswordHash
-                    });
+                        passwordHash = user.PasswordHash,
+                        email = user.Email,
+                        confirmedEmail = user.EmailConfirmed
+                        
+                    }); 
             }
 
             return IdentityResult.Success;
@@ -151,14 +154,31 @@ namespace SysCandidato.Models.AccessBE
             }
         }
 
-        public Task<bool> GetEmailConfirmedAsync(User user, CancellationToken cancellationToken)
+        public async Task<bool> GetEmailConfirmedAsync(User user, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            using (var connection = Access.GetConnection().ToMySql())
+            {
+                if (connection.State == System.Data.ConnectionState.Closed)
+                    connection.Open();
+
+                return await connection.QueryFirstOrDefaultAsync<bool>("Select confirmedEmail From users_tb WHERE username = @username", new
+                {
+                    username = user.UserName
+                });
+            }
         }
 
         public Task SetEmailConfirmedAsync(User user, bool confirmed, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            using (var connection = Access.GetConnection().ToMySql())
+            {
+                connection.ExecuteAsync("UPDATE users_tb SET confirmedEmail = @confirmedEmail", new
+                {
+                    confirmedEmail = true
+                });
+                return Task.CompletedTask;
+            }
+
         }
 
         public async Task<User> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)

@@ -22,7 +22,15 @@ namespace SysCandidato
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddIdentityCore<User>(options => { }).AddDefaultTokenProviders();
+            services.AddIdentityCore<User>(options =>
+            {
+                options.SignIn.RequireConfirmedEmail = true;
+                options.Password.RequireDigit = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 6;
+
+            }).AddDefaultTokenProviders();
             services.AddScoped<IUserStore<User>, UserStore>();
 
             //Chama o método que adiciona distribuição entre caches de memoria
@@ -30,7 +38,7 @@ namespace SysCandidato
 
             //Adiciona e especifica a sessão que será usada para restaurar os dados dos usuários
             services.AddSession(options =>
-            {               
+            {
                 options.IdleTimeout = TimeSpan.FromSeconds(500);
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
@@ -64,7 +72,7 @@ namespace SysCandidato
 
             app.UseRouting();
             app.UseAuthorization();
-            
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
