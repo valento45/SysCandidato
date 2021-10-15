@@ -12,6 +12,10 @@ a {
   color: #0366d6;
 }
 
+a.text-center{
+    text-align:center;
+}
+
 .btn-primary {
   color: #fff;
   background-color: #1b6ec2;
@@ -60,7 +64,10 @@ html {
 
 body {
   /* Margin bottom by footer height */
-  margin-bottom: 60px;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+align-items: center;
 }
 .footer {
   position: absolute;

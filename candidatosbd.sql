@@ -2,13 +2,64 @@ create database candidatosbd;
 
 use candidatosbd;
 
+
+create table organizacao_tb(
+id int auto_increment primary key,
+nome varchar(100)
+);
+
 create table users_tb(
 id_usuario int auto_increment primary key,
 username varchar(150),
 normalizedUserName varchar(150),
 email varchar(150),
-passwordhash varchar(300)
+normalizedEmail varchar (150),
+passwordhash varchar(300),
+confirmedEmail bool,
+securityStamp varchar(100),
+concurrencyStamp varchar(100),
+twoFactorEnable bool,
+lockoutEmail bool,
+lockoutEnabled bool,
+accessFailedCount int,
+orgId int,
+Constraint foreign key (orgId)
+References organizacao_tb(id)
 );
+
+create table login_tb(
+LoginProvider int auto_increment primary key,
+ProviderDisplayName varchar(100),
+userId int,
+constraint foreign key(userId)
+References users_tb(id_usuario)
+);
+
+create table user_claims_tb(
+id int auto_increment primary key,
+userId int,
+claimType varchar(100),
+claimValue varchar(100),
+Constraint Foreign Key(userId)
+References users_tb(id_usuario)
+);
+
+DELIMITER $$
+CREATE DEFINER=CURRENT_USER PROCEDURE add_version_to_actor ( ) 
+BEGIN
+DECLARE colName TEXT;
+
+SELECT column_name INTO colName
+FROM information_schema.columns 
+WHERE table_schema = 'candidatosbd'
+    AND table_name = 'users_tb'
+AND column_name = 'confirmedEmail';
+IF colName is null THEN 
+    alter table users_tb ADD COLUMN confirmedEmail bool default false;
+END IF; 
+
+
+END$$
 
 create table vagas_tb(
 id_vaga int auto_increment primary key,
@@ -43,6 +94,3 @@ select* from pessoa_tb;
 select * from users_tb;
 
 
-update users_tb set email = 'iggor1935@hotmail.com' WHERE id_usuario = 1;
-
-alter table users_tb ADD COLUMN confirmedEmail bool default false;

@@ -17,9 +17,9 @@ namespace SysCandidato.Controllers
 {
     public class HomeController : Controller
     {
-        private UserManager<User> _userManager;
+        private UserManager<Usuario> _userManager;
 
-        public HomeController(UserManager<User> userManager)
+        public HomeController(UserManager<Usuario> userManager)
         {
             _userManager = userManager;
         }
@@ -38,14 +38,14 @@ namespace SysCandidato.Controllers
                 var user = await _userManager.FindByNameAsync(model.UserName);
                 if (user == null)
                 {
-                    user = new User
+                    user = new Usuario
                     {
                         UserName = model.UserName,
                         Email = model.Email,
-                        EmailConfirmed = false                        
+                        EmailConfirmed = false
                     };
                     var result = await _userManager.CreateAsync(user, model.Password);
-                    
+
                     if (!result.Succeeded)
                     {
                         string erros = TrataExcecao(result.Errors);
@@ -59,9 +59,9 @@ namespace SysCandidato.Controllers
                         //Nome do action, nome do controller
                         var resetURL = Url.Action("ConfirmEmail", "Home", new { token = token, email = model.Email }, Request.Scheme);
 
-                        await EmailModel.EnviaMensagemEmail(user.Email, "iggor.carvalho1935@gmail.com", "Confirmação de e-mail", "Olá, " +
+                        await EmailModel.EnviaMensagemEmail(user.Email, "errojoiasmrx@gmail.com", "Confirmação de e-mail", "Olá, " +
                             "segue o link para confirmação " +
-                            "de e-mail \r\n" + resetURL, "iggor.carvalho1935@gmail.com", "Sh1n1g4m3!@#");
+                            "de e-mail \r\n" + resetURL, "errojoiasmrx@gmail.com", "erro1234");
 
                         return View("Success", "Usuário cadastrado com sucesso! Verifique seu e-mail para confirmação antes de utilizar nossos serviços.");
                     }
@@ -95,20 +95,33 @@ namespace SysCandidato.Controllers
                     ModelState.AddModelError("", "Usuário ou senha inválida!");
                     return View();
                 }
-                User _user = await _userManager.FindByNameAsync(loginModel.UserName);
-                if (_user != null && await _userManager.CheckPasswordAsync(_user, loginModel.Password))
+                Usuario _user = await _userManager.FindByNameAsync(loginModel.UserName);
+                if (_user != null && !await _userManager.IsLockedOutAsync(_user))
                 {
-                    if (!await _userManager.IsEmailConfirmedAsync(_user))
+                    if (await _userManager.CheckPasswordAsync(_user, loginModel.Password))
                     {
-                        ModelState.AddModelError("", "Por favor, confirme seu e-mail antes de utilizar nossos serviços.");
-                        return View();
+                        if (!await _userManager.IsEmailConfirmedAsync(_user))
+                        {
+                            ModelState.AddModelError("", "Por favor, confirme seu e-mail antes de utilizar nossos serviços.");
+                            return View();
+                        }
+
+                        //reseta contagem de erros de login, ao conseguir logar
+                        await _userManager.ResetAccessFailedCountAsync(_user);
+
+                        loginModel.Password = _userManager.PasswordHasher.HashPassword(_user, loginModel.Password);
+                        LoginModel.SetHashCode(loginModel.UserName);
+                        HttpContext.Session.SetString("SessionUser", Access.Encrypt(LoginModel.GetHashCode().ToString(), JsonConvert.SerializeObject(loginModel)));
+                        return RedirectToAction(nameof(Index));
                     }
 
+                    await _userManager.AccessFailedAsync(_user);
 
-                    loginModel.Password = _userManager.PasswordHasher.HashPassword(_user, loginModel.Password);
-                    LoginModel.SetHashCode(loginModel.UserName);
-                    HttpContext.Session.SetString("SessionUser", Access.Encrypt(LoginModel.GetHashCode().ToString(), JsonConvert.SerializeObject(loginModel)));
-                    return RedirectToAction(nameof(Index));
+                    if(await _userManager.IsLockedOutAsync(_user))
+                    {
+                        //email deve ser enviado com sugestao de mudanã de senha
+
+                    }
                 }
                 ModelState.AddModelError("", "Usuário ou senha inválida!");
             }
@@ -168,7 +181,7 @@ namespace SysCandidato.Controllers
                 {
                     var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                     var resetURL = Url.Action(nameof(ResetPassword), "Home", new { token = token, email = model.Email }, Request.Scheme);
-                    string message = await EmailModel.EnviaMensagemEmail(model.Email, "iggor.carvalho1935@gmail.com", "Resetar senha", $"Clique no link para redefinir sua senha \r\n {resetURL}", "iggor.carvalho1935@gmail.com", "Sh1n1g4m3!@#");
+                    string message = await EmailModel.EnviaMensagemEmail(model.Email, "errojoiasmrx@gmail.com", "Resetar senha", $"Clique no link para redefinir sua senha \r\n {resetURL}", "errojoiasmrx@gmail.com", "erro1234");
                     if (message.ToLower() != "success")
                     {
                         return View("success", "Tivemos um probleminha ao enviar email. :/ \r\nMensagem de erro:\r\n" + message);
@@ -209,10 +222,10 @@ namespace SysCandidato.Controllers
 
         [HttpGet]
         public async Task<IActionResult> ConfirmEmail(string token, string email)
-        {
+        { 
             var user = await _userManager.FindByEmailAsync(email);
 
-            if(user != null)
+            if (user != null)
             {
                 var result = await _userManager.ConfirmEmailAsync(user, token);
 

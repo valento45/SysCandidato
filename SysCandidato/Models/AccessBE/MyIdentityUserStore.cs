@@ -11,26 +11,26 @@ using System.Threading.Tasks;
 
 namespace SysCandidato.Models.AccessBE
 {
-    public class MyIdentityUserStore : UserStoreBase<User, string,
+    public class MyIdentityUserStore : UserStoreBase<Usuario, string,
         IdentityUserClaim<string>, IdentityUserLogin<string>, IdentityUserToken<string>>
     {
         public MyIdentityUserStore(IdentityErrorDescriber describer) : base(describer)
         {
         }
 
-        public override IQueryable<User> Users => throw new NotImplementedException();
+        public override IQueryable<Usuario> Users => throw new NotImplementedException();
 
-        public override Task AddClaimsAsync(User user, IEnumerable<Claim> claims, CancellationToken cancellationToken = default)
+        public override Task AddClaimsAsync(Usuario user, IEnumerable<Claim> claims, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        public override Task AddLoginAsync(User user, UserLoginInfo login, CancellationToken cancellationToken = default)
+        public override Task AddLoginAsync(Usuario user, UserLoginInfo login, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        public override async Task<IdentityResult> CreateAsync(User user, CancellationToken cancellationToken = default)
+        public override async Task<IdentityResult> CreateAsync(Usuario user, CancellationToken cancellationToken = default)
         {
             using (MySqlConnection con = Access.GetConnection() as MySqlConnection)
             {
@@ -46,7 +46,7 @@ namespace SysCandidato.Models.AccessBE
             return IdentityResult.Success;
         }
 
-        public override async Task<IdentityResult> DeleteAsync(User user, CancellationToken cancellationToken = default)
+        public override async Task<IdentityResult> DeleteAsync(Usuario user, CancellationToken cancellationToken = default)
         {
             using (MySqlConnection con = Access.GetConnection() as MySqlConnection)
             {
@@ -59,14 +59,14 @@ namespace SysCandidato.Models.AccessBE
             return IdentityResult.Success;
         }
 
-        public override async Task<User> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken = default)
+        public override async Task<Usuario> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken = default)
         {
             using (var connection = Access.GetConnection().ToMySql())
             {
                 if (connection.State == System.Data.ConnectionState.Closed)
                     connection.Open();
 
-                return  await connection.QueryFirstOrDefaultAsync<User>("Select * From users_tb WHERE email = @email", new
+                return  await connection.QueryFirstOrDefaultAsync<Usuario>("Select * From users_tb WHERE email = @email", new
                 {
                     email = normalizedEmail
                 });
@@ -74,56 +74,56 @@ namespace SysCandidato.Models.AccessBE
             }
         }
 
-        public override Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken = default)
+        public override Task<Usuario> FindByIdAsync(string userId, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        public override async Task<User> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken = default)
+        public override async Task<Usuario> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken = default)
         {
             using (var connection = Access.GetConnection().ToMySql())
             {
                 if (connection.State == System.Data.ConnectionState.Closed)
                     connection.Open();
 
-                return await connection.QueryFirstOrDefaultAsync<User>("Select * From users_tb WHERE username = @username", new
+                return await connection.QueryFirstOrDefaultAsync<Usuario>("Select * From users_tb WHERE username = @username", new
                 {
                     username = normalizedUserName
                 });
             }
         }
 
-        public override Task<IList<Claim>> GetClaimsAsync(User user, CancellationToken cancellationToken = default)
+        public override Task<IList<Claim>> GetClaimsAsync(Usuario user, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        public override Task<IList<UserLoginInfo>> GetLoginsAsync(User user, CancellationToken cancellationToken = default)
+        public override Task<IList<UserLoginInfo>> GetLoginsAsync(Usuario user, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        public override Task<IList<User>> GetUsersForClaimAsync(Claim claim, CancellationToken cancellationToken = default)
+        public override Task<IList<Usuario>> GetUsersForClaimAsync(Claim claim, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        public override Task RemoveClaimsAsync(User user, IEnumerable<Claim> claims, CancellationToken cancellationToken = default)
+        public override Task RemoveClaimsAsync(Usuario user, IEnumerable<Claim> claims, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        public override Task RemoveLoginAsync(User user, string loginProvider, string providerKey, CancellationToken cancellationToken = default)
+        public override Task RemoveLoginAsync(Usuario user, string loginProvider, string providerKey, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        public override Task ReplaceClaimAsync(User user, Claim claim, Claim newClaim, CancellationToken cancellationToken = default)
+        public override Task ReplaceClaimAsync(Usuario user, Claim claim, Claim newClaim, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        public override Task<IdentityResult> UpdateAsync(User user, CancellationToken cancellationToken = default)
+        public override Task<IdentityResult> UpdateAsync(Usuario user, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
@@ -133,12 +133,12 @@ namespace SysCandidato.Models.AccessBE
             throw new NotImplementedException();
         }
 
-        protected override Task<IdentityUserToken<string>> FindTokenAsync(User user, string loginProvider, string name, CancellationToken cancellationToken)
+        protected override Task<IdentityUserToken<string>> FindTokenAsync(Usuario user, string loginProvider, string name, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        protected override Task<User> FindUserAsync(string userId, CancellationToken cancellationToken)
+        protected override Task<Usuario> FindUserAsync(string userId, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

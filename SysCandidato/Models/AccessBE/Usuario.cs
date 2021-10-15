@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SysCandidato.Models.AccessBE
 {
-    public class User : IdentityUser
+    public class Usuario : IdentityUser
     {
         public string Id_Usuario { get; set; }
 

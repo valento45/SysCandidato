@@ -7,7 +7,7 @@ using System;
 using SysCandidato.Models.AccessBE;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
-
+using Microsoft.EntityFrameworkCore.Design;
 namespace SysCandidato
 {
     public class Startup
@@ -22,16 +22,22 @@ namespace SysCandidato
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddIdentityCore<User>(options =>
+            services.AddIdentityCore<Usuario>(options =>
             {
+                //configuracao da senha do usuario, definicao de critérios
                 options.SignIn.RequireConfirmedEmail = true;
                 options.Password.RequireDigit = false;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
-                options.Password.RequiredLength = 6;
+                options.Password.RequireLowercase = false;
+                options.Password.RequiredLength = 4;
 
-            }).AddDefaultTokenProviders();
-            services.AddScoped<IUserStore<User>, UserStore>();
+                //protecao contra ataque usando lockout - bloqueio de user
+                options.Lockout.MaxFailedAccessAttempts = 3;
+                options.Lockout.AllowedForNewUsers = true;
+
+            }).AddDefaultTokenProviders().AddPasswordValidator<ValidadorSenha<Usuario>>();//adicionando token para recuperacao de email, e senha, adicionando class para validacao de senha
+            services.AddScoped<IUserStore<Usuario>, UserStore>();
 
             //Chama o método que adiciona distribuição entre caches de memoria
             services.AddDistributedMemoryCache();

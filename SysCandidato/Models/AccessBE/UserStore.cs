@@ -10,7 +10,7 @@ using ExtensionMethods.ConnectionsGateway;
 
 namespace SysCandidato.Models.AccessBE
 {
-    public class UserStore : IUserStore<User>, IUserPasswordStore<User>, IUserEmailStore<User>
+    public class UserStore : IUserStore<Usuario>, IUserPasswordStore<Usuario>, IUserEmailStore<Usuario>, IUserLockoutStore<Usuario>
     {
         /// <summary>
         /// Insere o usuário no banco de dados
@@ -18,7 +18,7 @@ namespace SysCandidato.Models.AccessBE
         /// <param name="user"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<IdentityResult> CreateAsync(User user, CancellationToken cancellationToken)
+        public async Task<IdentityResult> CreateAsync(Usuario user, CancellationToken cancellationToken)
         {
             using (MySqlConnection con = Access.GetConnection().ToMySql())
             {
@@ -37,7 +37,7 @@ namespace SysCandidato.Models.AccessBE
             return IdentityResult.Success;
         }
 
-        public async Task<IdentityResult> DeleteAsync(User user, CancellationToken cancellationToken)
+        public async Task<IdentityResult> DeleteAsync(Usuario user, CancellationToken cancellationToken)
         {
             using (MySqlConnection con = Access.GetConnection().ToMySql())
             {
@@ -56,54 +56,54 @@ namespace SysCandidato.Models.AccessBE
 
         }
 
-        public async Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken)
+        public async Task<Usuario> FindByIdAsync(string userId, CancellationToken cancellationToken)
         {
             using (MySqlConnection con = Access.GetConnection().ToMySql())
             {
                 if (con.State == System.Data.ConnectionState.Closed)
                     con.Open();
-                return await con.QueryFirstOrDefaultAsync<User>("SELECT * FROM users_tb WHERE id_usuario = @id", new { id = userId });
+                return await con.QueryFirstOrDefaultAsync<Usuario>("SELECT * FROM users_tb WHERE id_usuario = @id", new { id = userId });
             }
         }
 
-        public async Task<User> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
+        public async Task<Usuario> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
         {
             using (MySqlConnection con = Access.GetConnection().ToMySql())
             {
                 if (con.State == System.Data.ConnectionState.Closed)
                     con.Open();
-                return await con.QueryFirstOrDefaultAsync<User>("SELECT * FROM users_tb WHERE normalizedUserName = @name", new { name = normalizedUserName });
+                return await con.QueryFirstOrDefaultAsync<Usuario>("SELECT * FROM users_tb WHERE normalizedUserName = @name", new { name = normalizedUserName });
             }
         }
 
-        public Task<string> GetNormalizedUserNameAsync(User user, CancellationToken cancellationToken)
+        public Task<string> GetNormalizedUserNameAsync(Usuario user, CancellationToken cancellationToken)
         {
             return Task.FromResult(user.NormalizedUserName);
         }
 
-        public Task<string> GetUserIdAsync(User user, CancellationToken cancellationToken)
+        public Task<string> GetUserIdAsync(Usuario user, CancellationToken cancellationToken)
         {
             return Task.FromResult(user.Id_Usuario);
         }
 
-        public Task<string> GetUserNameAsync(User user, CancellationToken cancellationToken)
+        public Task<string> GetUserNameAsync(Usuario user, CancellationToken cancellationToken)
         {
             return Task.FromResult(user.UserName);
         }
 
-        public Task SetNormalizedUserNameAsync(User user, string normalizedName, CancellationToken cancellationToken)
+        public Task SetNormalizedUserNameAsync(Usuario user, string normalizedName, CancellationToken cancellationToken)
         {
             user.NormalizedUserName = normalizedName;
             return Task.CompletedTask;
         }
 
-        public Task SetUserNameAsync(User user, string userName, CancellationToken cancellationToken)
+        public Task SetUserNameAsync(Usuario user, string userName, CancellationToken cancellationToken)
         {
             user.UserName = userName;
             return Task.CompletedTask;
         }
 
-        public async Task<IdentityResult> UpdateAsync(User user, CancellationToken cancellationToken)
+        public async Task<IdentityResult> UpdateAsync(Usuario user, CancellationToken cancellationToken)
         {
             using (MySqlConnection con = Access.GetConnection().ToMySql())
             {
@@ -119,28 +119,28 @@ namespace SysCandidato.Models.AccessBE
             return IdentityResult.Success;
         }
 
-        public Task<bool> HasPasswordAsync(User user, CancellationToken cancellationToken)
+        public Task<bool> HasPasswordAsync(Usuario user, CancellationToken cancellationToken)
         {
             return Task.FromResult(user.PasswordHash != null);
         }
 
-        public Task SetPasswordHashAsync(User user, string passwordHash, CancellationToken cancellationToken)
+        public Task SetPasswordHashAsync(Usuario user, string passwordHash, CancellationToken cancellationToken)
         {
             user.PasswordHash = passwordHash;
             return Task.CompletedTask;
         }
 
-        public Task<string> GetPasswordHashAsync(User user, CancellationToken cancellationToken)
+        public Task<string> GetPasswordHashAsync(Usuario user, CancellationToken cancellationToken)
         {
             return Task.FromResult(user.PasswordHash);
         }
 
-        public Task SetEmailAsync(User user, string email, CancellationToken cancellationToken)
+        public Task SetEmailAsync(Usuario user, string email, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<string> GetEmailAsync(User user, CancellationToken cancellationToken)
+        public async Task<string> GetEmailAsync(Usuario user, CancellationToken cancellationToken)
         {
             using (var connection = Access.GetConnection().ToMySql())
             {
@@ -154,7 +154,7 @@ namespace SysCandidato.Models.AccessBE
             }
         }
 
-        public async Task<bool> GetEmailConfirmedAsync(User user, CancellationToken cancellationToken)
+        public async Task<bool> GetEmailConfirmedAsync(Usuario user, CancellationToken cancellationToken)
         {
             using (var connection = Access.GetConnection().ToMySql())
             {
@@ -168,7 +168,7 @@ namespace SysCandidato.Models.AccessBE
             }
         }
 
-        public Task SetEmailConfirmedAsync(User user, bool confirmed, CancellationToken cancellationToken)
+        public Task SetEmailConfirmedAsync(Usuario user, bool confirmed, CancellationToken cancellationToken)
         {
             using (var connection = Access.GetConnection().ToMySql())
             {
@@ -181,23 +181,62 @@ namespace SysCandidato.Models.AccessBE
 
         }
 
-        public async Task<User> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)
+        public async Task<Usuario> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)
         {
             using (MySqlConnection con = Access.GetConnection().ToMySql())
             {
                 if (con.State == System.Data.ConnectionState.Closed)
                     con.Open();
-                return await con.QueryFirstOrDefaultAsync<User>("SELECT * FROM users_tb WHERE email = @name", new { name = normalizedEmail });
+                return await con.QueryFirstOrDefaultAsync<Usuario>("SELECT * FROM users_tb WHERE email = @name", new { name = normalizedEmail });
             }
         }
+        
 
-        public Task<string> GetNormalizedEmailAsync(User user, CancellationToken cancellationToken)
+        public Task<string> GetNormalizedEmailAsync(Usuario user, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public Task SetNormalizedEmailAsync(User user, string normalizedEmail, CancellationToken cancellationToken)
+        public Task SetNormalizedEmailAsync(Usuario user, string normalizedEmail, CancellationToken cancellationToken)
         {
+            return Task.CompletedTask;
+        }
+
+        public Task<DateTimeOffset?> GetLockoutEndDateAsync(Usuario user, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SetLockoutEndDateAsync(Usuario user, DateTimeOffset? lockoutEnd, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> IncrementAccessFailedCountAsync(Usuario user, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task ResetAccessFailedCountAsync(Usuario user, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> GetAccessFailedCountAsync(Usuario user, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> GetLockoutEnabledAsync(Usuario user, CancellationToken cancellationToken)
+        {
+
+
+            throw new NotImplementedException();
+        }
+
+        public Task SetLockoutEnabledAsync(Usuario user, bool enabled, CancellationToken cancellationToken)
+        {
+            user.LockoutEnabled = enabled;
             return Task.CompletedTask;
         }
     }
