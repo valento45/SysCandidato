@@ -5,13 +5,13 @@ VisualStudioVersion = 16.0.31424.327
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SysCandidato", "SysCandidato\SysCandidato.csproj", "{F62C9471-5535-4222-AF4C-98E63CF4D712}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtensionMethods", "ExtensionMethods\ExtensionMethods.csproj", "{7C0B9B78-87F9-4007-A47B-43B2ECEEEF43}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MtAux", "ExtensionMethods\MtAux.csproj", "{7C0B9B78-87F9-4007-A47B-43B2ECEEEF43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "WebApi\WebApi.csproj", "{061DCAEC-BAC5-4B6C-823B-132AB0422B5A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "WebApi\WebApi.csproj", "{061DCAEC-BAC5-4B6C-823B-132AB0422B5A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi.Domain", "WebApi.Domain\WebApi.Domain.csproj", "{C08BA8B0-2C41-4458-BC00-32CBF1CD3E2A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi.Domain", "WebApi.Domain\WebApi.Domain.csproj", "{C08BA8B0-2C41-4458-BC00-32CBF1CD3E2A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiRepository", "WebApiRepository\WebApiRepository.csproj", "{BBA074B6-A143-470D-8814-E38AFD3969AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiRepository", "WebApiRepository\WebApiRepository.csproj", "{BBA074B6-A143-470D-8814-E38AFD3969AD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

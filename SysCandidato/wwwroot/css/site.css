@@ -1,93 +1,49 @@
-﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-for details on configuring this project to bundle and minify static web assets. */
-
-a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+﻿body {
+    background: #8999A8;
 }
-
-/* Provide sufficient contrast against white background */
-a {
-  color: #0366d6;
+.navbar, .dropdown-menu {
+    background: rgba(255,255,255,0.25);
+    border: none;
 }
-
-a.text-center{
-    text-align:center;
+    .nav > li > a, .dropdown-menu > li > a:focus, .dropdown-menu > li > a:hover, .dropdown-menu > li > a, .dropdown-menu > li {
+        border-bottom: 3px solid transparent;
+    }
+        .nav > li > a:focus, .nav > li > a:hover, .nav .open > a, .nav .open > a:focus, .nav .open > a:hover, .dropdown-menu > li > a:focus, .dropdown-menu > li > a:hover {
+            border-bottom: 3px solid transparent;
+            background: none;
+        }
+        .navbar a, .dropdown-menu > li > a, .dropdown-menu > li > a:focus, .dropdown-menu > li > a:hover, .navbar-toggle {
+            color: #fff;
+        }
+.dropdown-menu {
+    -webkit-box-shadow: none;
+    box-shadow: none;
 }
-
-.btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+.nav li:hover:nth-child(8n+1), .nav li.active:nth-child(8n+1) {
+    border-bottom: #C4E17F 3px solid;
 }
-
-.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+.nav li:hover:nth-child(8n+2), .nav li.active:nth-child(8n+2) {
+    border-bottom: #F7FDCA 3px solid;
 }
-
-/* Sticky footer styles
--------------------------------------------------- */
-html {
-  font-size: 14px;
+.nav li:hover:nth-child(8n+3), .nav li.active:nth-child(8n+3) {
+    border-bottom: #FECF71 3px solid;
 }
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+.nav li:hover:nth-child(8n+4), .nav li.active:nth-child(8n+4) {
+    border-bottom: #F0776C 3px solid;
 }
-
-.border-top {
-  border-top: 1px solid #e5e5e5;
+.nav li:hover:nth-child(8n+5), .nav li.active:nth-child(8n+5) {
+    border-bottom: #DB9DBE 3px solid;
 }
-.border-bottom {
-  border-bottom: 1px solid #e5e5e5;
+.nav li:hover:nth-child(8n+6), .nav li.active:nth-child(8n+6) {
+    border-bottom: #C49CDE 3px solid;
 }
-
-.box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+.nav li:hover:nth-child(8n+7), .nav li.active:nth-child(8n+7) {
+    border-bottom: #669AE1 3px solid;
 }
-
-button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
+.nav li:hover:nth-child(8n+8), .nav li.active:nth-child(8n+8) {
+    border-bottom: #62C2E4 3px solid;
 }
-
-/* Sticky footer styles
--------------------------------------------------- */
-html {
-  position: relative;
-  min-height: 100%;
-}
-
-body {
-  /* Margin bottom by footer height */
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-align-items: center;
-}
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px; /* Vertically center the text there */
-}
-
-.form-center {
-    background-color: #e1e1e1;
-    width: 50%;
-    height: 50%;
-    margin:auto;
-
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    font-family: Tahoma;
-    font-size: 9pt;
+.navbar-toggle .icon-bar {
+    color: #fff;
+    background: #fff;
 }

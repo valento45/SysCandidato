@@ -23,6 +23,8 @@ using System.Text;
 using WebApi.Helper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using AutoMapper;
+using WebApi.Dto;
 
 namespace WebApi
 {
@@ -38,38 +40,48 @@ namespace WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
-
-            //string migrationAssembly = typeof(Startup).GetType().Assembly.GetName().Name;
-            //services.AddDbContext<Context>(opt => opt.UseMySql(Access.GetConnection().ToString(), ServerVersion.AutoDetect(Access.GetConnection().ToString()), x => x.MigrationsAssembly(migrationAssembly)));
+            //var migrationAssembly = typeof(Startup).GetTypeInfo()
+            //                                         .Assembly.GetName()
+            //                                         .Name;
+            //services.AddDbContext<Context>(
+            //    opt => opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), sql =>
+            //    sql.MigrationsAssembly(migrationAssembly))
+            //);
 
             services.AddIdentityCore<User>(options =>
             {
-                options.SignIn.RequireConfirmedEmail = false;
+                // options.SignIn.RequireConfirmedEmail = true;
+
                 options.Password.RequireDigit = false;
-                options.Password.RequiredLength = 4;
+                options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireLowercase = false;
                 options.Password.RequireUppercase = false;
-                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequiredLength = 4;
 
                 options.Lockout.MaxFailedAccessAttempts = 3;
+                options.Lockout.AllowedForNewUsers = true;
             })
-             .AddRoles<Role>()
-             .AddRoleValidator<RoleValidator<Role>>()
+            .AddRoles<Role>()
+            .AddRoleValidator<RoleValidator<Role>>()
             .AddRoleManager<RoleManager<Role>>()
             .AddSignInManager<SignInManager<User>>()
             .AddDefaultTokenProviders();
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.GetSection("AppSettings:Token").Value)),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                };
-            });
+            services.AddScoped<UserManager<User>>();
+            services.AddSingleton<SignInManager<User>>();
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(options =>
+                    {
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuerSigningKey = true,
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII
+                                .GetBytes(Configuration.GetSection("AppSettings:Token").Value)),
+                            ValidateIssuer = false,
+                            ValidateAudience = false
+                        };
+                    });
 
             services.AddMvc(options =>
             {
@@ -77,18 +89,20 @@ namespace WebApi
                     .RequireAuthenticatedUser()
                     .Build();
                 options.Filters.Add(new AuthorizeFilter(policy));
-            });
+            })
+                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            var mappingConfig = new AutoMapper.MapperConfiguration(mc =>
+            var mappingConfig = new MapperConfiguration(mc =>
             {
                 mc.AddProfile(new AutoMapperProfile());
             });
-            AutoMapper.IMapper mapper = mappingConfig.CreateMapper();
+
+            IMapper mapper = mappingConfig.CreateMapper();
+
             services.AddSingleton(mapper);
 
-            services.AddScoped<User>();
-
             services.AddCors();
+            services.AddControllers( x => { });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

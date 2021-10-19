@@ -28,13 +28,13 @@ namespace WebApi.Controllers
         private readonly SignInManager<User> _signInManager;
         private readonly IMapper _mapper;
         public UserController() { }
-        public UserController(IConfiguration config, UserManager<User> userManager,
-                              SignInManager<User> signInManager, IMapper mapper)
+        public UserController(IConfiguration config/*, UserManager<User> userManager,
+                              SignInManager<User> signInManager, IMapper mapper*/)
         {
             _config = config;
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _mapper = mapper;
+           // _userManager = userManager;
+           // _signInManager = signInManager;
+           // _mapper = mapper;
         }
 
         // GET: api/User
@@ -42,7 +42,13 @@ namespace WebApi.Controllers
         [AllowAnonymous]
         public IActionResult Get()
         {
-            return Ok(new UserDto());
+            return Ok(new UserDto
+            {
+                UserName = "testeApi",
+                Nome = "Teste",
+                Password = "1234",
+                ConfirmPassword = "1234",
+            });
         }
 
         // GET: api/User/5
@@ -83,7 +89,7 @@ namespace WebApi.Controllers
         // POST: api/User
         [HttpPost("Register")]
         [AllowAnonymous]
-        public async Task<IActionResult> Register(UserDto userDto) 
+        public async Task<IActionResult> Register(UserDto userDto)
         {
             try
             {

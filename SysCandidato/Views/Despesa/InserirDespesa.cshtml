@@ -1,0 +1,76 @@
+﻿@model SysCandidato.Models.MtCash.Despesa
+
+@{
+    ViewData["Title"] = "InserirDespesa";
+}
+
+<h1>InserirDespesa</h1>
+
+<h4>Despesa</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="InserirDespesa">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="NomeFavorecido" class="control-label"></label>
+                <input asp-for="NomeFavorecido" class="form-control" />
+                <span asp-validation-for="NomeFavorecido" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="NomeDevedor" class="control-label"></label>
+                <input asp-for="NomeDevedor" class="form-control" />
+                <span asp-validation-for="NomeDevedor" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Valor" class="control-label"></label>
+                <input asp-for="Valor" class="form-control" />
+                <span asp-validation-for="Valor" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Id" class="control-label"></label>
+                <input asp-for="Id" class="form-control" />
+                <span asp-validation-for="Id" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="hidden" asp-for="Modulo_" value="F" class="form-control" />
+                <span asp-validation-for="Modulo_" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="NomeReg" class="control-label">Descrição</label>
+                <input asp-for="NomeReg" class="form-control" />
+                <span asp-validation-for="NomeReg" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="hidden" asp-for="DataReg" value="@DateTime.Now" class="form-control" />
+                <span asp-validation-for="DataReg" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="DataInicio" class="control-label"></label>
+                <input asp-for="DataInicio" class="form-control" />
+                <span asp-validation-for="DataInicio" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="DataVencimento" class="control-label"></label>
+                <input asp-for="DataVencimento" class="form-control" />
+                <span asp-validation-for="DataVencimento" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
